@@ -6,11 +6,10 @@ import idroid.android.mapskit.utils.DistributeType
 class MapFactory {
     companion object {
         fun createAndGetMap(context: Context, type: DistributeType): Maps? {
-            if (DistributeType.HUAWEI_SERVICES == type) {
-                //return HuaweiMapsImpl(context)
-                return null
+            return if (DistributeType.HUAWEI_SERVICES == type) {
+                HuaweiMapsImpl(context)
             } else {
-                return GoogleMapsImpl(context)
+                GoogleMapsImpl(context)
             }
         }
     }

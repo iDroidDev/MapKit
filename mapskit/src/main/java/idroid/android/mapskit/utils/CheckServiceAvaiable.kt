@@ -8,15 +8,16 @@ import com.huawei.hms.api.HuaweiApiAvailability
 class CheckServiceAvaiable {
     companion object {
         fun getAvailableService(context: Context): DistributeType {
-            if (ConnectionResult.SUCCESS == GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(
+
+            return when {
+                ConnectionResult.SUCCESS == GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(
                     context
-                )
-            ) return DistributeType.GOOGLE_SERVICES
-            else if (com.huawei.hms.api.ConnectionResult.SUCCESS == HuaweiApiAvailability.getInstance().isHuaweiMobileServicesAvailable(
+                ) -> DistributeType.GOOGLE_SERVICES
+                com.huawei.hms.api.ConnectionResult.SUCCESS == HuaweiApiAvailability.getInstance().isHuaweiMobileServicesAvailable(
                     context
-                )
-            ) return DistributeType.HUAWEI_SERVICES;
-            else return DistributeType.GOOGLE_SERVICES;
+                ) -> DistributeType.HUAWEI_SERVICES
+                else -> DistributeType.GOOGLE_SERVICES
+            }
         }
     }
 

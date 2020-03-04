@@ -3,20 +3,20 @@ package idroid.android.mapskit.factory
 import android.content.Context
 import android.os.Bundle
 import android.view.View
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.MapView
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
+import com.huawei.hms.maps.CameraUpdateFactory
+import com.huawei.hms.maps.HuaweiMap
+import com.huawei.hms.maps.MapView
+import com.huawei.hms.maps.OnMapReadyCallback
+import com.huawei.hms.maps.model.LatLng
+import com.huawei.hms.maps.model.Marker
+import com.huawei.hms.maps.model.MarkerOptions
 import idroid.android.mapskit.listener.OnMapMarkerClickListener
 import idroid.android.mapskit.listener.OnMapReadyListener
 
-class GoogleMapsImpl(context: Context) : BaseMaps(context), OnMapReadyCallback {
+class HuaweiMapsImpl(context: Context) : BaseMaps(context), OnMapReadyCallback {
 
     private var mapView: MapView = MapView(context)
-    private lateinit var map: GoogleMap
+    private lateinit var map: HuaweiMap
     private lateinit var onMapReadyListener: OnMapReadyListener
 
     override fun getMapView(): View {
@@ -32,8 +32,8 @@ class GoogleMapsImpl(context: Context) : BaseMaps(context), OnMapReadyCallback {
         mapView.getMapAsync(this)
     }
 
-    override fun onMapReady(googleMap: GoogleMap) {
-        map = googleMap
+    override fun onMapReady(huaweiMap: HuaweiMap) {
+        map = huaweiMap
         this.onMapReadyListener.onMapReady()
     }
 
@@ -51,7 +51,7 @@ class GoogleMapsImpl(context: Context) : BaseMaps(context), OnMapReadyCallback {
     }
 
     override fun setOnInfoWindowClickListener(onMapMarkerClickListener: OnMapMarkerClickListener) {
-        map.setOnInfoWindowClickListener(object : GoogleMap.OnInfoWindowClickListener {
+        map.setOnInfoWindowClickListener(object : HuaweiMap.OnInfoWindowClickListener {
             override fun onInfoWindowClick(marker: Marker) {
                 onMapMarkerClickListener.onMarkerClick(marker.getTitle(), marker.getSnippet())
             }

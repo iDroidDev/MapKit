@@ -9,23 +9,17 @@ import android.widget.RelativeLayout
 import idroid.android.mapskit.R
 import idroid.android.mapskit.factory.MapFactory
 import idroid.android.mapskit.factory.Maps
-import idroid.android.mapskit.listener.OnMapAsyncListener
 import idroid.android.mapskit.listener.OnMapMarkerClickListener
 import idroid.android.mapskit.listener.OnMapReadyListener
 import idroid.android.mapskit.utils.CheckServiceAvaiable
 import kotlinx.android.synthetic.main.huawei_google_map_view.view.*
 
-class HuaweiGoogleMapView : RelativeLayout, OnMapReadyListener {
-    internal var context: Context
-    internal lateinit var myMaps: Maps
-    internal lateinit var onMapAsyncListener: OnMapAsyncListener
+class HuaweiGoogleMapView(context: Context, attrs: AttributeSet?) : RelativeLayout(context, attrs),
+    OnMapReadyListener {
+    private lateinit var myMaps: Maps
+    private lateinit var onMapAsyncListener: (HuaweiGoogleMapView) -> Unit
 
-    constructor(context: Context) : super(context) {
-        this.context = context
-    }
-
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        this.context = context
+    init {
         inflateLayout()
     }
 
@@ -45,7 +39,7 @@ class HuaweiGoogleMapView : RelativeLayout, OnMapReadyListener {
         myMaps.onCreate(bundle)
     }
 
-    fun getMapAsync(onMapAsyncListener: OnMapAsyncListener) {
+    fun getMapAsync(onMapAsyncListener: (HuaweiGoogleMapView) -> Unit) {
         this.onMapAsyncListener = onMapAsyncListener
         myMaps.getMapAsync(this)
     }
@@ -104,7 +98,7 @@ class HuaweiGoogleMapView : RelativeLayout, OnMapReadyListener {
     }
 
     override fun onMapReady() {
-        onMapAsyncListener.onMapReady(this)
+        onMapAsyncListener.invoke(this)
     }
 
 }
