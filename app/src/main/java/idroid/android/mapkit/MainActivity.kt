@@ -18,8 +18,33 @@ class MainActivity : AppCompatActivity() {
 
         mapView.onCreate(mapViewBundle)
         mapView.getMapAsync {
-            //it.setMyLocationEnabled(true)
+            it.addMarker("Marker", "Snippet", 41.000000F, 29.00000F)
             it.moveCamera(41.000000F, 29.00000F, 20f)
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        mapView.onStart()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mapView.onDestroy()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mapView.onPause()
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        mapView.onLowMemory()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mapView.onStop()
     }
 }
