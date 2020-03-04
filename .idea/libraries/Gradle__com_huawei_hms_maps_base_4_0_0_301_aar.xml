@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: com.huawei.hms:maps-base:4.0.0.301@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/90dbfaf50af120bd3e2f5fbd9bc803cc/maps-base-4.0.0.301/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/90dbfaf50af120bd3e2f5fbd9bc803cc/maps-base-4.0.0.301/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/90dbfaf50af120bd3e2f5fbd9bc803cc/maps-base-4.0.0.301/jars/libs/r-classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

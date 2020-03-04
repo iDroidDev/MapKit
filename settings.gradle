@@ -1,0 +1,2 @@
+include ':app', ':mapskit'
+rootProject.name='MapKit'
