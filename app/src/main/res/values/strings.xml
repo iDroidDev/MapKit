@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">MapKit</string>
+    <string name="title_activity_map_view">MapViewActivity</string>
 </resources>
