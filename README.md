@@ -1,10 +1,4 @@
-# MapKit
-
-# Project Title
-
-One Paragraph of project description goes here
-
-## Getting Started
+# MapKit SDK
 
 This SDK includes Google Map and Huawei Map enhancements.Recently, with the release of Huawei App Gallery, many applications are performing map integration.
 
@@ -66,7 +60,7 @@ task clean(type: Delete) {
 
 ```
 
-#Add this plugin into your project build.gradle file: (Ex: build.gradle(app:XXX) 
+# Add this plugin into your project build.gradle file: (Ex: build.gradle(app:XXX) 
 
 ```
     apply plugin: 'com.huawei.agconnect'
@@ -74,13 +68,13 @@ task clean(type: Delete) {
     apply plugin: 'com.google.gms.google-services'
 ```
 
-#Add the dependency to your project build.gradle file:
+# Add the dependency to your project build.gradle file:
 ```
         implementation 'com.github.iDroidDev:MapKit:1.0.0'
 ```
 
-###Usage
-#Add Custom MapKit into XML file
+### Usage
+# Add Custom MapKit into XML file
 ```
   
     <idroid.android.mapskit.ui.HuaweiGoogleMapView
@@ -90,7 +84,7 @@ task clean(type: Delete) {
 
 ```
 
-#Configure map in your class
+# Configure map in your class
 ```
     mapView.onCreate(mapViewBundle)
     mapView.getMapAsync {
@@ -100,7 +94,7 @@ task clean(type: Delete) {
     
 ```
 
-#Don't Forget this code block
+# Don't Forget this code block
 ```
 override fun onStart() {
         super.onStart()
