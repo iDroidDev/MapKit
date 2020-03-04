@@ -2,9 +2,9 @@
 
 This SDK includes Google Map and Huawei Map enhancements.Recently, with the release of Huawei App Gallery, many applications are performing map integration.
 
-##Our main goal now aims to solve your map related problems. You will have completed both integrations using only our libraries.
+### Our main goal now aims to solve your map related problems. You will have completed both integrations using only our libraries.
 
-### Installing
+## Installing
 
 
 Add the code block to your project build.gradle file: (Ex: build.gradle(Project:XXX) 
@@ -60,7 +60,7 @@ task clean(type: Delete) {
 
 ```
 
-# Add this plugin into your project build.gradle file: (Ex: build.gradle(app:XXX) 
+### Add this plugin into your project build.gradle file: (Ex: build.gradle(app:XXX) 
 
 ```
     apply plugin: 'com.huawei.agconnect'
@@ -68,13 +68,13 @@ task clean(type: Delete) {
     apply plugin: 'com.google.gms.google-services'
 ```
 
-# Add the dependency to your project build.gradle file:
+### Add the dependency to your project build.gradle file:
 ```
         implementation 'com.github.iDroidDev:MapKit:1.0.0'
 ```
 
-### Usage
-# Add Custom MapKit into XML file
+## Usage
+### Add Custom MapKit into XML file
 ```
   
     <idroid.android.mapskit.ui.HuaweiGoogleMapView
@@ -84,7 +84,7 @@ task clean(type: Delete) {
 
 ```
 
-# Configure map in your class
+### Configure map in your class
 ```
     mapView.onCreate(mapViewBundle)
     mapView.getMapAsync {
@@ -94,7 +94,7 @@ task clean(type: Delete) {
     
 ```
 
-# Don't Forget this code block
+### Don't Forget this code block
 ```
 override fun onStart() {
         super.onStart()
@@ -123,7 +123,7 @@ override fun onStart() {
 ```
 
 
-## Authors
+# Authors
 
 * **Kaan KÜN** - *Mobile Application Developer*
 * **Mahmut YETİŞİR** - *Mobile Application Developer*
