@@ -114,4 +114,90 @@ class HuaweiMapsImpl(context: Context) : BaseMaps(context), OnMapReadyCallback {
     override fun onLowMemory() {
         mapView.onLowMemory()
     }
+
+    override fun isCompassEnabled(): Boolean {
+        return map.uiSettings.isCompassEnabled
+    }
+
+    override fun setCompassEnabled(compassEnabled: Boolean?) {
+        map.uiSettings.isCompassEnabled = compassEnabled!!
+    }
+
+    override fun isIndoorLevelPickerEnabled(): Boolean {
+        return map.uiSettings.isIndoorLevelPickerEnabled
+
+    }
+
+    override fun setIndoorLevelPickerEnabled(indoorLevelPickerEnabled: Boolean?) {
+        map.uiSettings.isIndoorLevelPickerEnabled = indoorLevelPickerEnabled!!
+    }
+
+    override fun isMapToolbarEnabled(): Boolean {
+        return map.uiSettings.isMapToolbarEnabled
+    }
+
+    override fun setMapToolbarEnabled(mapToolbarEnabled: Boolean?) {
+        map.uiSettings.isMapToolbarEnabled = mapToolbarEnabled!!
+    }
+
+    override fun isMyLocationButtonEnabled(): Boolean {
+        return map.uiSettings.isMyLocationButtonEnabled
+    }
+
+    override fun setMyLocationButtonEnabled(myLocationButtonEnabled: Boolean?) {
+        map.uiSettings.isMyLocationButtonEnabled = myLocationButtonEnabled!!
+    }
+
+    override fun isRotateGesturesEnabled(): Boolean {
+        return map.uiSettings.isRotateGesturesEnabled
+    }
+
+    override fun setRotateGesturesEnabled(rotateGesturesEnabled: Boolean?) {
+        map.uiSettings.isRotateGesturesEnabled = rotateGesturesEnabled!!
+    }
+
+    override fun isScrollGesturesEnabled(): Boolean {
+        return map.uiSettings.isScrollGesturesEnabled
+    }
+
+    override fun setScrollGesturesEnabled(scrollGesturesEnabled: Boolean?) {
+        map.uiSettings.isScrollGesturesEnabledDuringRotateOrZoom = scrollGesturesEnabled!!
+    }
+
+    override fun isScrollGesturesEnabledDuringRotateOrZoom(): Boolean {
+        return map.uiSettings.isScrollGesturesEnabledDuringRotateOrZoom
+    }
+
+    override fun setScrollGesturesEnabledDuringRotateOrZoom(scrollGesturesEnabledDuringRotateOrZoom: Boolean?) {
+        map.uiSettings.isScrollGesturesEnabledDuringRotateOrZoom =
+            scrollGesturesEnabledDuringRotateOrZoom!!
+    }
+
+    override fun isTiltGesturesEnabled(): Boolean {
+        return map.uiSettings.isTiltGesturesEnabled
+    }
+
+    override fun setTiltGesturesEnabled(tiltGesturesEnabled: Boolean?) {
+        map.uiSettings.isTiltGesturesEnabled = tiltGesturesEnabled!!
+    }
+
+    override fun isZoomControlsEnabled(): Boolean {
+        return map.uiSettings.isZoomControlsEnabled
+    }
+
+    override fun setZoomControlsEnabled(zoomControlsEnabled: Boolean?) {
+        map.uiSettings.isZoomControlsEnabled = zoomControlsEnabled!!
+    }
+
+    override fun isZoomGesturesEnabled(): Boolean {
+        return map.uiSettings.isZoomGesturesEnabled
+    }
+
+    override fun setZoomGesturesEnabled(zoomGesturesEnabled: Boolean?) {
+        map.uiSettings.isZoomGesturesEnabled = true
+    }
+
+    override fun setAllGesturesEnabled(allGestureEnable: Boolean?) {
+        map.uiSettings.setAllGesturesEnabled(allGestureEnable!!)
+    }
 }
