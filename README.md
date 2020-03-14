@@ -122,6 +122,7 @@ override fun onStart() {
     }
 ```
 
+**Our LocationKit SDK link:** www.github.com/iDroidDev/LocationKit
 
 # Authors
 
