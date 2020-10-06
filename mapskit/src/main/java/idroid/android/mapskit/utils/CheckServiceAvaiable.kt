@@ -7,17 +7,23 @@ import com.huawei.hms.api.HuaweiApiAvailability
 
 class CheckServiceAvaiable {
     companion object {
-        fun getAvailableService(context: Context): DistributeType {
+        var distributeType: DistributeType? = null
 
-            return when {
-                ConnectionResult.SUCCESS == GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(
-                    context
-                ) -> DistributeType.GOOGLE_SERVICES
-                com.huawei.hms.api.ConnectionResult.SUCCESS == HuaweiApiAvailability.getInstance().isHuaweiMobileServicesAvailable(
-                    context
-                ) -> DistributeType.HUAWEI_SERVICES
-                else -> DistributeType.GOOGLE_SERVICES
+        fun getAvailableService(context: Context): DistributeType {
+            if (distributeType == null) {
+                distributeType = when {
+                    ConnectionResult.SUCCESS == GoogleApiAvailability.getInstance()
+                        .isGooglePlayServicesAvailable(
+                            context
+                        ) -> DistributeType.GOOGLE_SERVICES
+                    com.huawei.hms.api.ConnectionResult.SUCCESS == HuaweiApiAvailability.getInstance()
+                        .isHuaweiMobileServicesAvailable(
+                            context
+                        ) -> DistributeType.HUAWEI_SERVICES
+                    else -> DistributeType.GOOGLE_SERVICES
+                }
             }
+            return distributeType ?: DistributeType.GOOGLE_SERVICES
         }
     }
 

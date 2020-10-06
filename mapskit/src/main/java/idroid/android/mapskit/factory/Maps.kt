@@ -1,25 +1,106 @@
 package idroid.android.mapskit.factory
 
+import android.graphics.Bitmap
+import android.location.Location
 import android.os.Bundle
 import android.view.View
-import idroid.android.mapskit.listener.OnMapMarkerClickListener
-import idroid.android.mapskit.listener.OnMapReadyListener
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.CircleOptions
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
+import idroid.android.mapskit.model.*
 
-interface Maps {
+
+interface Maps : UISettings {
     fun getMapView(): View
     fun onCreate(bundle: Bundle)
     fun getMapAsync(onMapReadyListener: OnMapReadyListener)
-    fun addMarker(title: String, snippet: String, latitude: Float?, longitude: Float?)
-    fun setOnInfoWindowClickListener(onMapMarkerClickListener: OnMapMarkerClickListener)
-    fun moveCamera(latitude: Float?, longitude: Float?, zoomRatio: Float?)
-    fun animateCamera(latitude: Float?, longitude: Float?, zoomRatio: Float?)
-    fun setMyLocationEnabled(myLocationEnabled: Boolean?)
+
+    fun addMarker(title: String, snippet: String, latitude: Float?, longitude: Float?): CommonMarker
+    fun addMarker(icon: Bitmap, latLng: LatLng, title: String): CommonMarker
+    fun addMarker(icon: Bitmap, latLng: LatLng, zIndex: Float): CommonMarker
+    fun addMarker(icon: Bitmap, latLng: LatLng): CommonMarker
+
+    fun moveCamera(latitude: Double, longitude: Double, zoomRatio: Float)
+    fun moveCamera(latLng: LatLng, zoomRatio: Float, v1: Int, v2: Int)
+    fun moveCamera(latLng: LatLng, zoomRatio: Double)
+    fun moveCamera(latLng: LatLng, zoomRatio: Float)
+
+    fun animateCamera(latitude: Float, longitude: Float, zoomRatio: Float)
+    fun animateCamera(zoomRatio: Float)
+    fun animateCamera(latLng: LatLng, zoom: Float)
+    fun animateCamera(latLngBounds: LatLngBounds, padding: Int)
+    fun animateCamera(latLng: LatLng, zoom: Float, duration: Int)
+    fun animateCamera(location: Location, zoom: Float, bearing: Float, tilt: Float)
+
+    fun setInfoWindowAdapter(infoWindowAdapter: InfoWindowAdapter)
+
+    fun addCircle(circleOptions: CircleOptions): CommonCircle
+    fun addPolyline(options: CommonPolylineOptions): CommonPolyline
+    fun addTileOverlay(tileOverlayOptions: Any)
+
+    fun setMaxZoomPreference(zoomRatio: Float)
+    fun setMinZoomPreference(zoomRatio: Float)
+    fun zoomIn()
+    fun zoomOut()
+
+    fun setMyLocationEnabled(myLocationEnabled: Boolean)
+    fun setMapType(mapType: Type)
+    fun setBuildings(b: Boolean)
+    fun getCameraPosition(): CameraPosition
+
+    fun getProjection(): CommonProjection
+
+    fun setOnMarkerClickListener(onMapMarkerClickListener: OnMapMarkerClickListener?)
+    fun setOnInfoWindowClickListener(onInfoWindowClickListener: OnMapInfoWindowClickListener)
+    fun setOnMapLongClickListener(mapLongClickListener: MapLongClickListener)
+    fun setOnMapClickListener(mapClickListener: MapClickListener)
+    fun setOnMapLoadedCallback(mapLoadedListener: MapLoadedListener)
+    fun setOnCameraIdleListener(cameraIdleListener: () -> Unit)
+    fun setOnCameraMoveListener(cameraMoveListener: () -> Unit)
+
+    fun snapshot(snapshotReadyListener: SnapshotReadyListener)
+
+
     fun clear()
-    fun onSaveInstanceState(bundle: Bundle)
-    fun onStart()
-    fun onResume()
-    fun onPause()
-    fun onStop()
-    fun onDestroy()
-    fun onLowMemory()
+
+    interface OnMapInfoWindowClickListener {
+        fun onInfoWindowClick(marker: CommonMarker)
+    }
+
+    interface OnMapMarkerClickListener {
+        fun onMarkerClick(marker: CommonMarker): Boolean
+    }
+
+    interface OnMapReadyListener {
+        fun onMapReady(map: Maps)
+    }
+
+    interface CameraChangeListener {
+        fun onCameraChange(position: CameraPosition)
+    }
+
+    interface MapLoadedListener {
+        fun onMapLoaded()
+    }
+
+    interface MapLongClickListener {
+        fun onMapLongClick(point: LatLng)
+    }
+
+    interface MapClickListener {
+        fun onMapClick(point: LatLng)
+    }
+
+    interface InfoWindowAdapter {
+        fun getInfoWindow(marker: CommonMarker): View
+    }
+
+    interface SnapshotReadyListener {
+        fun onSnapshotReady(_bitmap: Bitmap)
+    }
+
+    enum class Type {
+        SATALLITE, NORMAL
+    }
 }

@@ -2,6 +2,7 @@ package idroid.android.mapkit
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import idroid.android.mapskit.factory.Maps
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -17,10 +18,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         mapView.onCreate(mapViewBundle)
-        mapView.getMapAsync {
-            it.addMarker("Marker", "Snippet", 41.000000F, 29.00000F)
-            it.moveCamera(41.000000F, 29.00000F, 20f)
-        }
+        mapView.getMapAsync(object : Maps.OnMapReadyListener {
+            override fun onMapReady(map: Maps) {
+                map.addMarker("Marker", "Snippet", 41.000000F, 29.00000F)
+                map.moveCamera(41.000000, 29.00000, 12f)
+            }
+        })
     }
 
     override fun onStart() {

@@ -2,22 +2,21 @@ package idroid.android.mapskit.ui
 
 import android.content.Context
 import android.os.Bundle
-import android.os.Parcelable
 import android.util.AttributeSet
 import android.view.View
 import android.widget.RelativeLayout
 import idroid.android.mapskit.R
 import idroid.android.mapskit.factory.MapFactory
 import idroid.android.mapskit.factory.Maps
-import idroid.android.mapskit.listener.OnMapMarkerClickListener
-import idroid.android.mapskit.listener.OnMapReadyListener
+import idroid.android.mapskit.factory.MapsLifeCycle
 import idroid.android.mapskit.utils.CheckServiceAvaiable
 import kotlinx.android.synthetic.main.huawei_google_map_view.view.*
 
 class HuaweiGoogleMapView(context: Context, attrs: AttributeSet?) : RelativeLayout(context, attrs),
-    OnMapReadyListener {
+    Maps.OnMapReadyListener {
     private lateinit var myMaps: Maps
-    private lateinit var onMapAsyncListener: (HuaweiGoogleMapView) -> Unit
+    private lateinit var onMapAsyncListener: Maps.OnMapReadyListener
+    private val distributeType = CheckServiceAvaiable.getAvailableService(context)
 
     init {
         inflateLayout()
@@ -26,7 +25,7 @@ class HuaweiGoogleMapView(context: Context, attrs: AttributeSet?) : RelativeLayo
     private fun inflateLayout() {
         View.inflate(context, R.layout.huawei_google_map_view, this)
         myMaps =
-            MapFactory.createAndGetMap(context, CheckServiceAvaiable.getAvailableService(context))!!
+            MapFactory.createAndGetMap(context, distributeType)
 
         myMaps.getMapView().layoutParams = LayoutParams(
             LayoutParams.MATCH_PARENT,
@@ -39,66 +38,40 @@ class HuaweiGoogleMapView(context: Context, attrs: AttributeSet?) : RelativeLayo
         myMaps.onCreate(bundle)
     }
 
-    fun getMapAsync(onMapAsyncListener: (HuaweiGoogleMapView) -> Unit) {
+    fun getMapAsync(onMapAsyncListener: Maps.OnMapReadyListener) {
         this.onMapAsyncListener = onMapAsyncListener
         myMaps.getMapAsync(this)
     }
 
-    fun addMarker(title: String, snippet: String, latitude: Float, longitude: Float) {
-        myMaps.addMarker(title, snippet, latitude, longitude)
+    override fun onMapReady(map: Maps) {
+        onMapAsyncListener.onMapReady(map)
     }
 
-    fun setOnInfoWindowClickListener(onMapMarkerClickListener: OnMapMarkerClickListener) {
-        myMaps.setOnInfoWindowClickListener(onMapMarkerClickListener)
-    }
-
-    fun moveCamera(latitude: Float, longitude: Float, zoomRatio: Float) {
-        myMaps.moveCamera(latitude, longitude, zoomRatio)
-    }
-
-    fun animateCamera(latitude: Float, longitude: Float, zoomRatio: Float) {
-        myMaps.animateCamera(latitude, longitude, zoomRatio)
-    }
-
-    fun setMyLocationEnabled(myLocationEnabled: Boolean) {
-        myMaps.setMyLocationEnabled(myLocationEnabled)
-    }
-
-    fun clear() {
-        myMaps.clear()
-    }
-
-    fun onSaveInstanceState(bundle: Bundle): Parcelable? {
-        myMaps.onSaveInstanceState(bundle)
-        return super.onSaveInstanceState()
+    fun onEnterAmbient(bundle: Bundle?) {
+        (myMaps as MapsLifeCycle).onEnterAmbient(bundle)
     }
 
     fun onStart() {
-        myMaps.onStart()
-    }
-
-    fun onStop() {
-        myMaps.onStop()
-    }
-
-    fun onPause() {
-        myMaps.onPause()
+        (myMaps as MapsLifeCycle).onStart()
     }
 
     fun onResume() {
-        myMaps.onResume()
+        (myMaps as MapsLifeCycle).onResume()
+    }
+
+    fun onPause() {
+        (myMaps as MapsLifeCycle).onPause()
+    }
+
+    fun onStop() {
+        (myMaps as MapsLifeCycle).onStop()
     }
 
     fun onDestroy() {
-        myMaps.onDestroy()
+        (myMaps as MapsLifeCycle).onDestroy()
     }
 
     fun onLowMemory() {
-        myMaps.onLowMemory()
+        (myMaps as MapsLifeCycle).onLowMemory()
     }
-
-    override fun onMapReady() {
-        onMapAsyncListener.invoke(this)
-    }
-
 }
