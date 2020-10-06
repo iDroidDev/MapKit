@@ -5,33 +5,47 @@ import android.graphics.Bitmap
 import android.location.Location
 import android.os.Bundle
 import android.view.View
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.MapView
-import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import idroid.android.mapskit.model.*
+import idroid.android.mapskit.utils.MapType
 import idroid.android.mapskit.utils.toHesCircle
 import idroid.android.mapskit.utils.toHesMarker
 import idroid.android.mapskit.utils.toHesPolyline
 
-class GoogleMapsImpl(context: Context) : BaseMaps(context), OnMapReadyCallback {
 
-    private var mapView: MapView = MapView(context)
+class GoogleMapsImpl(context: Context, mapType: MapType = MapType.MAP_VIEW) : BaseMaps(
+    context,
+    mapType
+), OnMapReadyCallback {
+
+    private var mapView: MapView? = null
+    private var mapFragment: SupportMapFragment? = null
     private lateinit var map: GoogleMap
     private lateinit var onMapReadyListener: Maps.OnMapReadyListener
 
-    override fun getMapView(): View {
+    init {
+        if (mapType == MapType.MAP_FRAGMENT) {
+            mapFragment = SupportMapFragment.newInstance()
+            replaceFragment(mapFragment)
+        } else if (mapType == MapType.MAP_VIEW) {
+            mapView = MapView(context)
+        }
+    }
+
+    override fun getMapView(): View? {
         return mapView
     }
 
     override fun onCreate(bundle: Bundle) {
-        mapView.onCreate(bundle)
+        mapView?.onCreate(bundle)
+        mapFragment?.onCreate(bundle)
     }
 
     override fun getMapAsync(onMapReadyListener: Maps.OnMapReadyListener) {
         this.onMapReadyListener = onMapReadyListener
-        mapView.getMapAsync(this)
+        if (mapType == MapType.MAP_VIEW) mapView?.getMapAsync(this)
+        else if (mapType == MapType.MAP_FRAGMENT) mapFragment?.getMapAsync(this)
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -62,8 +76,7 @@ class GoogleMapsImpl(context: Context) : BaseMaps(context), OnMapReadyCallback {
                 .icon(BitmapDescriptorFactory.fromBitmap(icon))
                 .position(latLng)
                 .title(title)
-        )
-            .toHesMarker()
+        ).toHesMarker()
     }
 
     override fun addMarker(icon: Bitmap, latLng: LatLng, zIndex: Float): CommonMarker {
@@ -72,8 +85,7 @@ class GoogleMapsImpl(context: Context) : BaseMaps(context), OnMapReadyCallback {
                 .icon(BitmapDescriptorFactory.fromBitmap(icon))
                 .position(latLng)
                 .zIndex(zIndex)
-        )
-            .toHesMarker()
+        ).toHesMarker()
     }
 
     override fun addMarker(icon: Bitmap, latLng: LatLng): CommonMarker {
@@ -81,8 +93,16 @@ class GoogleMapsImpl(context: Context) : BaseMaps(context), OnMapReadyCallback {
             MarkerOptions()
                 .icon(BitmapDescriptorFactory.fromBitmap(icon))
                 .position(latLng)
-        )
-            .toHesMarker()
+        ).toHesMarker()
+    }
+
+    override fun addMarker(commonMarkerOptions: CommonMarkerOptions): CommonMarker {
+        return map.addMarker(
+            MarkerOptions()
+                .icon(BitmapDescriptorFactory.fromBitmap(commonMarkerOptions.icon))
+                .position(commonMarkerOptions.latLng)
+                .title(commonMarkerOptions.title)
+        ).toHesMarker()
     }
 
     override fun moveCamera(latitude: Double, longitude: Double, zoomRatio: Float) {
@@ -274,31 +294,38 @@ class GoogleMapsImpl(context: Context) : BaseMaps(context), OnMapReadyCallback {
     }
 
     override fun onSaveInstanceState(bundle: Bundle) {
-        mapView.onSaveInstanceState(bundle)
+        mapView?.onSaveInstanceState(bundle)
+        mapFragment?.onSaveInstanceState(bundle)
     }
 
     override fun onStart() {
-        mapView.onStart()
+        mapView?.onStart()
+        mapFragment?.onStart()
     }
 
     override fun onResume() {
-        mapView.onResume()
+        mapView?.onResume()
+        mapFragment?.onResume()
     }
 
     override fun onPause() {
-        mapView.onPause()
+        mapView?.onPause()
+        mapFragment?.onPause()
     }
 
     override fun onStop() {
-        mapView.onStop()
+        mapView?.onStop()
+        mapFragment?.onStop()
     }
 
     override fun onDestroy() {
-        mapView.onDestroy()
+        mapView?.onDestroy()
+        mapFragment?.onDestroy()
     }
 
     override fun onLowMemory() {
-        mapView.onLowMemory()
+        mapView?.onLowMemory()
+        mapFragment?.onLowMemory()
     }
 
 
@@ -331,7 +358,9 @@ class GoogleMapsImpl(context: Context) : BaseMaps(context), OnMapReadyCallback {
     }
 
     override fun setMyLocationButtonEnabled(myLocationButtonEnabled: Boolean?) {
-        map.uiSettings.isMyLocationButtonEnabled = myLocationButtonEnabled!!
+        myLocationButtonEnabled?.let {
+            map.uiSettings.isMyLocationButtonEnabled = it
+        }
     }
 
     override fun isRotateGesturesEnabled(): Boolean {
@@ -388,7 +417,8 @@ class GoogleMapsImpl(context: Context) : BaseMaps(context), OnMapReadyCallback {
     }
 
     override fun onEnterAmbient(bundle: Bundle?) {
-        mapView.onEnterAmbient(bundle)
+        mapView?.onEnterAmbient(bundle)
+        mapFragment?.onEnterAmbient(bundle)
     }
 
 }

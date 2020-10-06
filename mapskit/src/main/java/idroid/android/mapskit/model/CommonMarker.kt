@@ -50,4 +50,8 @@ data class CommonMarker(
         if (DistributeType.HUAWEI_SERVICES === type) (marker as Marker).tag =
             tag else (marker as com.google.android.gms.maps.model.Marker).tag = tag
     }
+
+    fun showInfoWindow() {
+        if (DistributeType.HUAWEI_SERVICES === type) (marker as Marker).showInfoWindow() else (marker as com.google.android.gms.maps.model.Marker).showInfoWindow()
+    }
 }

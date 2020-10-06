@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.location.Location
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.RequiresPermission
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
@@ -12,7 +13,7 @@ import idroid.android.mapskit.model.*
 
 
 interface Maps : UISettings {
-    fun getMapView(): View
+    fun getMapView(): View?
     fun onCreate(bundle: Bundle)
     fun getMapAsync(onMapReadyListener: OnMapReadyListener)
 
@@ -20,6 +21,7 @@ interface Maps : UISettings {
     fun addMarker(icon: Bitmap, latLng: LatLng, title: String): CommonMarker
     fun addMarker(icon: Bitmap, latLng: LatLng, zIndex: Float): CommonMarker
     fun addMarker(icon: Bitmap, latLng: LatLng): CommonMarker
+    fun addMarker(commonMarkerOptions: CommonMarkerOptions): CommonMarker
 
     fun moveCamera(latitude: Double, longitude: Double, zoomRatio: Float)
     fun moveCamera(latLng: LatLng, zoomRatio: Float, v1: Int, v2: Int)
@@ -44,6 +46,7 @@ interface Maps : UISettings {
     fun zoomIn()
     fun zoomOut()
 
+    @RequiresPermission(anyOf = ["android.permission.ACCESS_COARSE_LOCATION", "android.permission.ACCESS_FINE_LOCATION"])
     fun setMyLocationEnabled(myLocationEnabled: Boolean)
     fun setMapType(mapType: Type)
     fun setBuildings(b: Boolean)

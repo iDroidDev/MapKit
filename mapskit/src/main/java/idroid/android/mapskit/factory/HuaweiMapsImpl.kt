@@ -7,31 +7,43 @@ import android.os.Bundle
 import android.view.View
 import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLngBounds
-import com.huawei.hms.maps.CameraUpdateFactory
-import com.huawei.hms.maps.HuaweiMap
-import com.huawei.hms.maps.MapView
-import com.huawei.hms.maps.OnMapReadyCallback
+import com.huawei.hms.maps.*
 import com.huawei.hms.maps.model.*
 import idroid.android.mapskit.model.*
 import idroid.android.mapskit.utils.*
 
-class HuaweiMapsImpl(context: Context) : BaseMaps(context), OnMapReadyCallback {
+class HuaweiMapsImpl(
+    context: Context,
+    mapType: MapType = MapType.MAP_VIEW
+) : BaseMaps(context, mapType), OnMapReadyCallback {
 
-    private var mapView: MapView = MapView(context)
+    private var mapView: MapView? = null
+    private var mapFragment: SupportMapFragment? = null
     private lateinit var map: HuaweiMap
     private lateinit var onMapReadyListener: Maps.OnMapReadyListener
 
-    override fun getMapView(): View {
+    init {
+        if (mapType == MapType.MAP_FRAGMENT) {
+            mapFragment = SupportMapFragment.newInstance()
+            replaceFragment(mapFragment)
+        } else if (mapType == MapType.MAP_VIEW) {
+            mapView = MapView(context)
+        }
+    }
+
+    override fun getMapView(): View? {
         return mapView
     }
 
     override fun onCreate(bundle: Bundle) {
-        mapView.onCreate(bundle)
+        mapView?.onCreate(bundle)
+        mapFragment?.onCreate(bundle)
     }
 
     override fun getMapAsync(onMapReadyListener: Maps.OnMapReadyListener) {
         this.onMapReadyListener = onMapReadyListener
-        mapView.getMapAsync(this)
+        if (mapType == MapType.MAP_VIEW) mapView?.getMapAsync(this)
+        else if (mapType == MapType.MAP_FRAGMENT) mapFragment?.getMapAsync(this)
     }
 
     override fun onMapReady(huaweiMap: HuaweiMap) {
@@ -90,8 +102,16 @@ class HuaweiMapsImpl(context: Context) : BaseMaps(context), OnMapReadyCallback {
             MarkerOptions()
                 .icon(BitmapDescriptorFactory.fromBitmap(icon))
                 .position(latLng.toHuaweiLatLng())
-        )
-            .toHesMarker()
+        ).toHesMarker()
+    }
+
+    override fun addMarker(commonMarkerOptions: CommonMarkerOptions): CommonMarker {
+        return map.addMarker(
+            MarkerOptions()
+                .icon(BitmapDescriptorFactory.fromBitmap(commonMarkerOptions.icon))
+                .position(commonMarkerOptions.latLng.toHuaweiLatLng())
+                .title(commonMarkerOptions.title)
+        ).toHesMarker()
     }
 
     override fun moveCamera(latitude: Double, longitude: Double, zoomRatio: Float) {
@@ -327,31 +347,38 @@ class HuaweiMapsImpl(context: Context) : BaseMaps(context), OnMapReadyCallback {
     }
 
     override fun onSaveInstanceState(bundle: Bundle) {
-        mapView.onSaveInstanceState(bundle)
+        mapView?.onSaveInstanceState(bundle)
+        mapFragment?.onSaveInstanceState(bundle)
     }
 
     override fun onStart() {
-        mapView.onStart()
+        mapView?.onStart()
+        mapFragment?.onStart()
     }
 
     override fun onResume() {
-        mapView.onResume()
+        mapView?.onResume()
+        mapFragment?.onResume()
     }
 
     override fun onPause() {
-        mapView.onPause()
+        mapView?.onPause()
+        mapFragment?.onPause()
     }
 
     override fun onStop() {
-        mapView.onStop()
+        mapView?.onStop()
+        mapFragment?.onStop()
     }
 
     override fun onDestroy() {
-        mapView.onDestroy()
+        mapView?.onDestroy()
+        mapFragment?.onDestroy()
     }
 
     override fun onLowMemory() {
-        mapView.onLowMemory()
+        mapView?.onLowMemory()
+        mapFragment?.onLowMemory()
     }
 
     override fun isCompassEnabled(): Boolean {
@@ -385,7 +412,7 @@ class HuaweiMapsImpl(context: Context) : BaseMaps(context), OnMapReadyCallback {
 
     override fun setMyLocationButtonEnabled(myLocationButtonEnabled: Boolean?) {
         myLocationButtonEnabled?.let {
-            map.uiSettings.isMyLocationButtonEnabled = myLocationButtonEnabled
+            map.uiSettings.isMyLocationButtonEnabled = it
         }
     }
 
@@ -443,7 +470,8 @@ class HuaweiMapsImpl(context: Context) : BaseMaps(context), OnMapReadyCallback {
     }
 
     override fun onEnterAmbient(bundle: Bundle?) {
-        mapView.onEnterAmbient(bundle)
+        mapView?.onEnterAmbient(bundle)
+        mapFragment?.onEnterAmbient(bundle)
     }
 
 }

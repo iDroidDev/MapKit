@@ -11,10 +11,11 @@ import idroid.android.mapskit.factory.Maps
 import idroid.android.mapskit.factory.MapsLifeCycle
 import idroid.android.mapskit.utils.CheckServiceAvaiable
 import idroid.android.mapskit.utils.MapType
-import kotlinx.android.synthetic.main.huawei_google_map_view.view.*
 
-class HuaweiGoogleMapView(context: Context, attrs: AttributeSet?) : RelativeLayout(context, attrs),
+class HuaweiGoogleSupportMapFragment(context: Context, attrs: AttributeSet?) :
+    RelativeLayout(context, attrs),
     Maps.OnMapReadyListener {
+
     private lateinit var myMaps: Maps
     private lateinit var onMapAsyncListener: Maps.OnMapReadyListener
     private val distributeType = CheckServiceAvaiable.getAvailableService(context)
@@ -24,15 +25,9 @@ class HuaweiGoogleMapView(context: Context, attrs: AttributeSet?) : RelativeLayo
     }
 
     private fun inflateLayout() {
-        View.inflate(context, R.layout.huawei_google_map_view, this)
+        View.inflate(context, R.layout.huawei_google_support_map_fragment, this)
         myMaps =
-            MapFactory.createAndGetMap(context, distributeType, MapType.MAP_VIEW)
-
-        myMaps.getMapView()?.layoutParams = LayoutParams(
-            LayoutParams.MATCH_PARENT,
-            LayoutParams.MATCH_PARENT
-        )
-        rlRootHuaweiGoogleMapView.addView(myMaps.getMapView())
+            MapFactory.createAndGetMap(context, distributeType, MapType.MAP_FRAGMENT)
     }
 
     fun onCreate(bundle: Bundle) {
@@ -75,4 +70,5 @@ class HuaweiGoogleMapView(context: Context, attrs: AttributeSet?) : RelativeLayo
     fun onLowMemory() {
         (myMaps as MapsLifeCycle).onLowMemory()
     }
+
 }
