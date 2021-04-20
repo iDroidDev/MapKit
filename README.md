@@ -70,7 +70,7 @@ task clean(type: Delete) {
 
 ### Add the dependency to your project build.gradle file:
 ```
-        implementation 'com.github.iDroidDev:MapKit:1.0.1'
+        implementation 'com.github.iDroidDev:MapKit:1.0.0'
 ```
 
 ## Usage
