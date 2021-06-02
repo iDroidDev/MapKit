@@ -39,6 +39,7 @@ interface Maps : UISettings {
 
     fun addCircle(circleOptions: CircleOptions): CommonCircle
     fun addPolyline(options: CommonPolylineOptions): CommonPolyline
+    fun addPolygon(options: CommonPolygonOptions): CommonPolygon
     fun addTileOverlay(tileOverlayOptions: Any)
 
     fun setMaxZoomPreference(zoomRatio: Float)
