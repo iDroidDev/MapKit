@@ -1,13 +1,22 @@
 # MapKit SDK
 
-This SDK includes Google Map and Huawei Map enhancements.Recently, with the release of Huawei App Gallery, many applications are performing map integration.
+This SDK includes Google Map and Huawei Map enhancements.Recently, with the release of Huawei App Gallery, many
+applications are performing map integration.
+
+## Releases
+
+[![](https://jitpack.io/v/iDroidDev/MapKit.svg)](https://jitpack.io/#iDroidDev/MapKit)
+
+### ArnyminerZ ([Github](https://github.com/ArnyminerZ/MapKit))
+
+[![](https://jitpack.io/v/ArnyminerZ/MapKit.svg)](https://jitpack.io/#ArnyminerZ/MapKit)
 
 ### Our main goal now aims to solve your map related problems. You will have completed both integrations using only our libraries.
 
 ## Installing
 
+Add the code block to your project build.gradle file: (Ex: build.gradle(Project:XXX)
 
-Add the code block to your project build.gradle file: (Ex: build.gradle(Project:XXX) 
 ```
         maven { url 'https://developer.huawei.com/repo/' }
 ```
