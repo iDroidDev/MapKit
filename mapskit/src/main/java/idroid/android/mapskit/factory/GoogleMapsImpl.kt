@@ -208,6 +208,14 @@ class GoogleMapsImpl(context: Context, mapType: MapType = MapType.MAP_VIEW) : Ba
         polylineOptions.addAll(options.getLatLngs())
         polylineOptions.width(options.getWidth())
         polylineOptions.color(options.getColor())
+
+        options.getStartCap()?.googleCap()?.let {
+            polylineOptions.startCap(it)
+        }
+        options.getEndCap()?.googleCap()?.let {
+            polylineOptions.endCap(it)
+        }
+
         val polyline: Polyline = map.addPolyline(polylineOptions)
         return polyline.toHesPolyline()
     }

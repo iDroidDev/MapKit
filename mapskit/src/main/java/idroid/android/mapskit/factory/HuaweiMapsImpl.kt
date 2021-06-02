@@ -238,6 +238,14 @@ class HuaweiMapsImpl(
         polylineOptions.addAll(options.getHuaweiLatLngs())
         polylineOptions.width(options.getWidth())
         polylineOptions.color(options.getColor())
+
+        options.getStartCap()?.hmsCap()?.let {
+            polylineOptions.startCap(it)
+        }
+        options.getEndCap()?.hmsCap()?.let {
+            polylineOptions.endCap(it)
+        }
+
         val polyline = map.addPolyline(polylineOptions)
         return polyline.toHesPolyline()!!
     }
