@@ -8,10 +8,7 @@ import android.view.View
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import idroid.android.mapskit.model.*
-import idroid.android.mapskit.utils.MapType
-import idroid.android.mapskit.utils.toHesCircle
-import idroid.android.mapskit.utils.toHesMarker
-import idroid.android.mapskit.utils.toHesPolyline
+import idroid.android.mapskit.utils.*
 
 
 class GoogleMapsImpl(context: Context, mapType: MapType = MapType.MAP_VIEW) : BaseMaps(
@@ -222,6 +219,28 @@ class GoogleMapsImpl(context: Context, mapType: MapType = MapType.MAP_VIEW) : Ba
 
         val polyline: Polyline = map.addPolyline(polylineOptions)
         return polyline.toHesPolyline()
+    }
+
+    override fun addPolygon(options: CommonPolygonOptions): CommonPolygon {
+        val polygonOptions = PolygonOptions()
+        polygonOptions.points.addAll(options.points)
+        if (options.holes != null)
+            polygonOptions.holes.addAll(options.holes)
+
+        polygonOptions.fillColor(options.fillColor)
+        polygonOptions.strokeColor(options.strokeColor)
+
+        polygonOptions.strokeWidth(options.strokeWidth)
+        options.strokeJointType?.let {
+            polygonOptions.strokeJointType(it.hms())
+        }
+
+        polygonOptions.clickable(options.clickable)
+        polygonOptions.geodesic(options.geodesic)
+        polygonOptions.visible(options.visible)
+
+        val polygon = map.addPolygon(polygonOptions)
+        return polygon.toHesPolygon()
     }
 
     override fun addTileOverlay(tileOverlayOptions: Any) {
