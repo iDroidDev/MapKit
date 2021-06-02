@@ -238,8 +238,41 @@ class HuaweiMapsImpl(
         polylineOptions.addAll(options.getHuaweiLatLngs())
         polylineOptions.width(options.getWidth())
         polylineOptions.color(options.getColor())
+
+        options.getStartCap()?.hmsCap()?.let {
+            polylineOptions.startCap(it)
+        }
+        options.getEndCap()?.hmsCap()?.let {
+            polylineOptions.endCap(it)
+        }
+
+        options.getJointType()?.hms()?.let {
+            polylineOptions.jointType(it)
+        }
+
         val polyline = map.addPolyline(polylineOptions)
         return polyline.toHesPolyline()!!
+    }
+
+    override fun addPolygon(options: CommonPolygonOptions): CommonPolygon {
+        val polygonOptions = PolygonOptions()
+        polygonOptions.points.addAll(options.hmsPoints())
+        polygonOptions.holes.addAll(options.hmsHoles())
+
+        polygonOptions.fillColor(options.fillColor)
+        polygonOptions.strokeColor(options.strokeColor)
+
+        polygonOptions.strokeWidth(options.strokeWidth)
+        options.strokeJointType?.let {
+            polygonOptions.strokeJointType(it.hms())
+        }
+
+        polygonOptions.clickable(options.clickable)
+        polygonOptions.geodesic(options.geodesic)
+        polygonOptions.visible(options.visible)
+
+        val polygon = map.addPolygon(polygonOptions)
+        return polygon.toHesPolygon()
     }
 
     override fun addTileOverlay(tileOverlayOptions: Any) {
