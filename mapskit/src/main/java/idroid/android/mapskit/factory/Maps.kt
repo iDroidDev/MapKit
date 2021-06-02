@@ -17,7 +17,7 @@ interface Maps : UISettings {
     fun onCreate(bundle: Bundle)
     fun getMapAsync(onMapReadyListener: OnMapReadyListener)
 
-    fun addMarker(title: String, snippet: String, latitude: Float?, longitude: Float?): CommonMarker
+    fun addMarker(title: String, snippet: String, latitude: Double?, longitude: Double?): CommonMarker
     fun addMarker(icon: Bitmap, latLng: LatLng, title: String): CommonMarker
     fun addMarker(icon: Bitmap, latLng: LatLng, zIndex: Float): CommonMarker
     fun addMarker(icon: Bitmap, latLng: LatLng): CommonMarker
@@ -28,7 +28,7 @@ interface Maps : UISettings {
     fun moveCamera(latLng: LatLng, zoomRatio: Double)
     fun moveCamera(latLng: LatLng, zoomRatio: Float)
 
-    fun animateCamera(latitude: Float, longitude: Float, zoomRatio: Float)
+    fun animateCamera(latitude: Double, longitude: Double, zoomRatio: Float)
     fun animateCamera(zoomRatio: Float)
     fun animateCamera(latLng: LatLng, zoom: Float)
     fun animateCamera(latLngBounds: LatLngBounds, padding: Int)

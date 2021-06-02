@@ -54,11 +54,11 @@ class HuaweiMapsImpl(
     override fun addMarker(
         title: String,
         snippet: String,
-        latitude: Float?,
-        longitude: Float?
+        latitude: Double?,
+        longitude: Double?
     ): CommonMarker {
-        val nyHuawei = latitude?.toDouble()?.let { lat ->
-            longitude?.toDouble()?.let { long ->
+        val nyHuawei = latitude?.let { lat ->
+            longitude?.let { long ->
                 LatLng(lat, long)
             }
         }
@@ -158,12 +158,12 @@ class HuaweiMapsImpl(
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng.toHuaweiLatLng(), zoomRatio))
     }
 
-    override fun animateCamera(latitude: Float, longitude: Float, zoomRatio: Float) {
+    override fun animateCamera(latitude: Double, longitude: Double, zoomRatio: Float) {
         map.animateCamera(
             CameraUpdateFactory.newLatLngZoom(
                 com.google.android.gms.maps.model.LatLng(
-                    latitude.toDouble(),
-                    longitude.toDouble()
+                    latitude,
+                    longitude
                 ).toHuaweiLatLng(), zoomRatio
             )
         )
@@ -473,5 +473,4 @@ class HuaweiMapsImpl(
         mapView?.onEnterAmbient(bundle)
         mapFragment?.onEnterAmbient(bundle)
     }
-
 }

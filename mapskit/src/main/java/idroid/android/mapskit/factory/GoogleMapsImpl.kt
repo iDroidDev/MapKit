@@ -56,11 +56,11 @@ class GoogleMapsImpl(context: Context, mapType: MapType = MapType.MAP_VIEW) : Ba
     override fun addMarker(
         title: String,
         snippet: String,
-        latitude: Float?,
-        longitude: Float?
+        latitude: Double?,
+        longitude: Double?
     ): CommonMarker {
-        val nyGoogle = latitude?.toDouble()?.let { lat ->
-            longitude?.toDouble()?.let { long ->
+        val nyGoogle = latitude?.let { lat ->
+            longitude?.let { long ->
                 LatLng(lat, long)
             }
         }
@@ -140,12 +140,12 @@ class GoogleMapsImpl(context: Context, mapType: MapType = MapType.MAP_VIEW) : Ba
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoomRatio))
     }
 
-    override fun animateCamera(latitude: Float, longitude: Float, zoomRatio: Float) {
+    override fun animateCamera(latitude: Double, longitude: Double, zoomRatio: Float) {
         map.animateCamera(
             CameraUpdateFactory.newLatLngZoom(
                 LatLng(
-                    latitude.toDouble(),
-                    longitude.toDouble()
+                    latitude,
+                    longitude
                 ), zoomRatio
             )
         )
