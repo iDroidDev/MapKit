@@ -334,8 +334,14 @@ class HuaweiMapsImpl(
         map.setOnCameraIdleListener { cameraIdleListener.invoke() }
     }
 
-    override fun setOnCameraMoveListener(cameraMoveListener: () -> Unit) {
-        map.setOnCameraMoveListener { cameraMoveListener.invoke() }
+    override fun setOnCameraMoveListener(cameraMoveListener: (position: com.google.android.gms.maps.model.LatLng) -> Unit) {
+        map.setOnCameraMoveListener {
+            cameraMoveListener.invoke(
+                with(map.cameraPosition.target) {
+                    com.google.android.gms.maps.model.LatLng(latitude, longitude)
+                }
+            )
+        }
     }
 
     override fun snapshot(snapshotReadyListener: Maps.SnapshotReadyListener) {

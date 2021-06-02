@@ -60,7 +60,7 @@ interface Maps : UISettings {
     fun setOnMapClickListener(mapClickListener: MapClickListener)
     fun setOnMapLoadedCallback(mapLoadedListener: MapLoadedListener)
     fun setOnCameraIdleListener(cameraIdleListener: () -> Unit)
-    fun setOnCameraMoveListener(cameraMoveListener: () -> Unit)
+    fun setOnCameraMoveListener(cameraMoveListener: (position: LatLng) -> Unit)
 
     fun snapshot(snapshotReadyListener: SnapshotReadyListener)
 

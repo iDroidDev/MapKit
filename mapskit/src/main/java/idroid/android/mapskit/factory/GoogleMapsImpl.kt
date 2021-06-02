@@ -281,8 +281,8 @@ class GoogleMapsImpl(context: Context, mapType: MapType = MapType.MAP_VIEW) : Ba
         map.setOnCameraIdleListener { cameraIdleListener.invoke() }
     }
 
-    override fun setOnCameraMoveListener(cameraMoveListener: () -> Unit) {
-        map.setOnCameraMoveListener { cameraMoveListener.invoke() }
+    override fun setOnCameraMoveListener(cameraMoveListener: (position: LatLng) -> Unit) {
+        map.setOnCameraMoveListener { cameraMoveListener.invoke(getCameraPosition().target) }
     }
 
     override fun snapshot(snapshotReadyListener: Maps.SnapshotReadyListener) {
