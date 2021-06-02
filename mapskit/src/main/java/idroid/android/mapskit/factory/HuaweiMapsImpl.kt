@@ -246,6 +246,10 @@ class HuaweiMapsImpl(
             polylineOptions.endCap(it)
         }
 
+        options.getJointType()?.hms()?.let {
+            polylineOptions.jointType(it)
+        }
+
         val polyline = map.addPolyline(polylineOptions)
         return polyline.toHesPolyline()!!
     }

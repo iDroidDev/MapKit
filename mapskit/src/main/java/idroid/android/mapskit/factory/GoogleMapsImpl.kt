@@ -216,6 +216,10 @@ class GoogleMapsImpl(context: Context, mapType: MapType = MapType.MAP_VIEW) : Ba
             polylineOptions.endCap(it)
         }
 
+        options.getJointType()?.google()?.let {
+            polylineOptions.jointType(it)
+        }
+
         val polyline: Polyline = map.addPolyline(polylineOptions)
         return polyline.toHesPolyline()
     }
