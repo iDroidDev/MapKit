@@ -6,10 +6,12 @@ applications are performing map integration.
 ## Releases
 
 [![](https://jitpack.io/v/iDroidDev/MapKit.svg)](https://jitpack.io/#iDroidDev/MapKit)
+[![SDK Test](https://github.com/iDroidDev/MapKit/actions/workflows/sdk-test.yml/badge.svg)](https://github.com/iDroidDev/MapKit/actions/workflows/sdk-test.yml)
 
 ### ArnyminerZ ([Github](https://github.com/ArnyminerZ/MapKit))
 
 [![](https://jitpack.io/v/ArnyminerZ/MapKit.svg)](https://jitpack.io/#ArnyminerZ/MapKit)
+[![SDK Test](https://github.com/ArnyminerZ/MapKit/actions/workflows/sdk-test.yml/badge.svg)](https://github.com/ArnyminerZ/MapKit/actions/workflows/sdk-test.yml)
 
 ### Our main goal now aims to solve your map related problems. You will have completed both integrations using only our libraries.
 
