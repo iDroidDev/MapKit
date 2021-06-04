@@ -24,16 +24,18 @@ interface Maps : UISettings {
     fun addMarker(commonMarkerOptions: CommonMarkerOptions): CommonMarker
 
     fun moveCamera(latitude: Double, longitude: Double, zoomRatio: Float)
-    fun moveCamera(latLng: LatLng, zoomRatio: Float, v1: Int, v2: Int)
+    fun moveCamera(zoomRatio: Float)
     fun moveCamera(latLng: LatLng, zoomRatio: Double)
+    fun moveCamera(latLngBounds: LatLngBounds, padding: Int)
+    fun moveCamera(latLng: LatLng, zoomRatio: Float, v1: Int, v2: Int)
     fun moveCamera(latLng: LatLng, zoomRatio: Float)
 
     fun animateCamera(latitude: Double, longitude: Double, zoomRatio: Float)
     fun animateCamera(zoomRatio: Float)
-    fun animateCamera(latLng: LatLng, zoom: Float)
+    fun animateCamera(latLng: LatLng, zoomRatio: Float)
     fun animateCamera(latLngBounds: LatLngBounds, padding: Int)
-    fun animateCamera(latLng: LatLng, zoom: Float, duration: Int)
-    fun animateCamera(location: Location, zoom: Float, bearing: Float, tilt: Float)
+    fun animateCamera(latLng: LatLng, zoomRatio: Float, duration: Int)
+    fun animateCamera(location: Location, zoomRatio: Float, bearing: Float, tilt: Float)
 
     fun setInfoWindowAdapter(infoWindowAdapter: InfoWindowAdapter)
 

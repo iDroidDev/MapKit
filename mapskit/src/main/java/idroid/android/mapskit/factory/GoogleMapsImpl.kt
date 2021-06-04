@@ -1,5 +1,6 @@
 package idroid.android.mapskit.factory
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.location.Location
@@ -137,6 +138,14 @@ class GoogleMapsImpl(context: Context, mapType: MapType = MapType.MAP_VIEW) : Ba
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoomRatio))
     }
 
+    override fun moveCamera(latLngBounds: LatLngBounds, padding: Int) {
+        map.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, padding))
+    }
+
+    override fun moveCamera(zoomRatio: Float) {
+        map.moveCamera(CameraUpdateFactory.zoomTo(zoomRatio))
+    }
+
     override fun animateCamera(latitude: Double, longitude: Double, zoomRatio: Float) {
         map.animateCamera(
             CameraUpdateFactory.newLatLngZoom(
@@ -152,10 +161,10 @@ class GoogleMapsImpl(context: Context, mapType: MapType = MapType.MAP_VIEW) : Ba
         map.animateCamera(CameraUpdateFactory.zoomTo(zoomRatio))
     }
 
-    override fun animateCamera(latLng: LatLng, zoom: Float) {
+    override fun animateCamera(latLng: LatLng, zoomRatio: Float) {
         val position = CameraPosition.Builder()
             .target(latLng)
-            .zoom(zoom).build()
+            .zoom(zoomRatio).build()
         map.animateCamera(CameraUpdateFactory.newCameraPosition(position))
     }
 
@@ -163,9 +172,9 @@ class GoogleMapsImpl(context: Context, mapType: MapType = MapType.MAP_VIEW) : Ba
         map.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, padding))
     }
 
-    override fun animateCamera(latLng: LatLng, zoom: Float, duration: Int) {
+    override fun animateCamera(latLng: LatLng, zoomRatio: Float, duration: Int) {
         map.animateCamera(
-            CameraUpdateFactory.newLatLngZoom(latLng, zoom),
+            CameraUpdateFactory.newLatLngZoom(latLng, zoomRatio),
             duration,
             object : GoogleMap.CancelableCallback {
                 override fun onFinish() {}
@@ -173,10 +182,10 @@ class GoogleMapsImpl(context: Context, mapType: MapType = MapType.MAP_VIEW) : Ba
             })
     }
 
-    override fun animateCamera(location: Location, zoom: Float, bearing: Float, tilt: Float) {
+    override fun animateCamera(location: Location, zoomRatio: Float, bearing: Float, tilt: Float) {
         val position = CameraPosition.Builder()
             .target(LatLng(location.latitude, location.longitude))
-            .zoom(zoom)
+            .zoom(zoomRatio)
             .bearing(getCameraPosition().bearing)
             .tilt(getCameraPosition().tilt)
             .build()
@@ -263,6 +272,7 @@ class GoogleMapsImpl(context: Context, mapType: MapType = MapType.MAP_VIEW) : Ba
         map.animateCamera(CameraUpdateFactory.zoomIn())
     }
 
+    @SuppressLint("MissingPermission")
     override fun setMyLocationEnabled(myLocationEnabled: Boolean) {
         map.isMyLocationEnabled = myLocationEnabled
     }
