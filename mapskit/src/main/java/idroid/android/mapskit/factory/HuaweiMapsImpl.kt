@@ -158,6 +158,19 @@ class HuaweiMapsImpl(
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng.toHuaweiLatLng(), zoomRatio))
     }
 
+    override fun moveCamera(zoomRatio: Float) {
+        map.moveCamera(CameraUpdateFactory.zoomTo(zoomRatio))
+    }
+
+    override fun moveCamera(latLngBounds: LatLngBounds, padding: Int) {
+        map.moveCamera(
+            CameraUpdateFactory.newLatLngBounds(
+                latLngBounds.toHuaweiLatLngBounds(),
+                padding
+            )
+        )
+    }
+
     override fun animateCamera(latitude: Double, longitude: Double, zoomRatio: Float) {
         map.animateCamera(
             CameraUpdateFactory.newLatLngZoom(
@@ -173,10 +186,10 @@ class HuaweiMapsImpl(
         map.animateCamera(CameraUpdateFactory.zoomTo(zoomRatio))
     }
 
-    override fun animateCamera(latLng: com.google.android.gms.maps.model.LatLng, zoom: Float) {
+    override fun animateCamera(latLng: com.google.android.gms.maps.model.LatLng, zoomRatio: Float) {
         val position = CameraPosition.Builder()
             .target(latLng.toHuaweiLatLng())
-            .zoom(zoom).build()
+            .zoom(zoomRatio).build()
         map.animateCamera(CameraUpdateFactory.newCameraPosition(position))
     }
 
@@ -191,11 +204,11 @@ class HuaweiMapsImpl(
 
     override fun animateCamera(
         latLng: com.google.android.gms.maps.model.LatLng,
-        zoom: Float,
+        zoomRatio: Float,
         duration: Int
     ) {
         map.animateCamera(
-            CameraUpdateFactory.newLatLngZoom(latLng.toHuaweiLatLng(), zoom),
+            CameraUpdateFactory.newLatLngZoom(latLng.toHuaweiLatLng(), zoomRatio),
             duration,
             object : HuaweiMap.CancelableCallback {
                 override fun onFinish() {}
@@ -203,13 +216,13 @@ class HuaweiMapsImpl(
             })
     }
 
-    override fun animateCamera(location: Location, zoom: Float, bearing: Float, tilt: Float) {
+    override fun animateCamera(location: Location, zoomRatio: Float, bearing: Float, tilt: Float) {
         val position = CameraPosition.Builder()
             .target(
                 com.google.android.gms.maps.model.LatLng(location.latitude, location.longitude)
                     .toHuaweiLatLng()
             )
-            .zoom(zoom)
+            .zoom(zoomRatio)
             .bearing(getCameraPosition().bearing)
             .tilt(getCameraPosition().tilt)
             .build()
