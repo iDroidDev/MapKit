@@ -14,7 +14,7 @@ import idroid.android.mapskit.model.*
 
 interface Maps : UISettings {
     fun getMapView(): View?
-    fun onCreate(bundle: Bundle)
+    fun onCreate(bundle: Bundle?)
     fun getMapAsync(onMapReadyListener: OnMapReadyListener)
 
     fun addMarker(title: String, snippet: String, latitude: Double?, longitude: Double?): CommonMarker
