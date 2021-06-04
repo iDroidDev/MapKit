@@ -35,7 +35,7 @@ class HuaweiMapsImpl(
         return mapView
     }
 
-    override fun onCreate(bundle: Bundle) {
+    override fun onCreate(bundle: Bundle?) {
         mapView?.onCreate(bundle)
         mapFragment?.onCreate(bundle)
     }
