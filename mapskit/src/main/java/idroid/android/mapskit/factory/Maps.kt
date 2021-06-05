@@ -65,7 +65,7 @@ interface Maps : UISettings {
     fun setOnCameraIdleListener(cameraIdleListener: () -> Unit)
     fun setOnCameraMoveListener(cameraMoveListener: (position: LatLng) -> Unit)
 
-    fun snapshot(snapshotReadyListener: (_bitmap: Bitmap) -> Unit)
+    fun snapshot(snapshotReadyListener: (_bitmap: Bitmap?) -> Unit)
 
     fun clear()
 

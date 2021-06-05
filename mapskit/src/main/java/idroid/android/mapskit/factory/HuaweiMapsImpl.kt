@@ -367,7 +367,7 @@ class HuaweiMapsImpl(
         }
     }
 
-    override fun snapshot(snapshotReadyListener: (_bitmap: Bitmap) -> Unit) {
+    override fun snapshot(snapshotReadyListener: (_bitmap: Bitmap?) -> Unit) {
         map.snapshot { bitmap -> snapshotReadyListener(bitmap) }
     }
 
