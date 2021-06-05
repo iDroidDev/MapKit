@@ -28,7 +28,7 @@ class HuaweiGoogleSupportMapFragment(context: Context, attrs: AttributeSet?) :
             MapFactory.createAndGetMap(context, distributeType, MapType.MAP_FRAGMENT)
     }
 
-    fun onCreate(bundle: Bundle) {
+    fun onCreate(bundle: Bundle?) {
         myMaps.onCreate(bundle)
     }
 
