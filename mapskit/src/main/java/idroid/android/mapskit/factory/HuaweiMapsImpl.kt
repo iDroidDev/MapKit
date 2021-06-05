@@ -117,7 +117,7 @@ class HuaweiMapsImpl(
         map.moveCamera(
             CameraUpdateFactory.newCameraPosition(
                 CameraPosition(
-                    com.google.android.gms.maps.model.LatLng(latitude, longitude).toHuaweiLatLng(),
+                    LatLng(latitude, longitude),
                     zoomRatio,
                     0f,
                     0f
@@ -217,10 +217,7 @@ class HuaweiMapsImpl(
 
     override fun animateCamera(location: Location, zoomRatio: Float, bearing: Float, tilt: Float) {
         val position = CameraPosition.Builder()
-            .target(
-                com.google.android.gms.maps.model.LatLng(location.latitude, location.longitude)
-                    .toHuaweiLatLng()
-            )
+            .target(LatLng(location.latitude, location.longitude))
             .zoom(zoomRatio)
             .bearing(getCameraPosition().bearing)
             .tilt(getCameraPosition().tilt)
@@ -324,10 +321,7 @@ class HuaweiMapsImpl(
     override fun getCameraPosition(): com.google.android.gms.maps.model.CameraPosition {
         val cameraPosition = map.cameraPosition
         return com.google.android.gms.maps.model.CameraPosition(
-            com.google.android.gms.maps.model.LatLng(
-                cameraPosition.target.latitude,
-                cameraPosition.target.longitude
-            ), cameraPosition.zoom, cameraPosition.tilt, cameraPosition.bearing
+            cameraPosition.target.toGoogleLatLng(), cameraPosition.zoom, cameraPosition.tilt, cameraPosition.bearing
         )
     }
 
@@ -347,23 +341,13 @@ class HuaweiMapsImpl(
 
     override fun setOnMapLongClickListener(mapLongClickListener: (point: com.google.android.gms.maps.model.LatLng) -> Unit) {
         map.setOnMapLongClickListener { latLng ->
-            mapLongClickListener(
-                com.google.android.gms.maps.model.LatLng(
-                    latLng.latitude,
-                    latLng.longitude
-                )
-            )
+            mapLongClickListener(latLng.toGoogleLatLng())
         }
     }
 
     override fun setOnMapClickListener(mapClickListener: (point: com.google.android.gms.maps.model.LatLng) -> Unit) {
         map.setOnMapClickListener { latLng ->
-            mapClickListener(
-                com.google.android.gms.maps.model.LatLng(
-                    latLng.latitude,
-                    latLng.longitude
-                )
-            )
+            mapClickListener(latLng.toGoogleLatLng())
         }
     }
 
@@ -378,9 +362,7 @@ class HuaweiMapsImpl(
     override fun setOnCameraMoveListener(cameraMoveListener: (position: com.google.android.gms.maps.model.LatLng) -> Unit) {
         map.setOnCameraMoveListener {
             cameraMoveListener.invoke(
-                with(map.cameraPosition.target) {
-                    com.google.android.gms.maps.model.LatLng(latitude, longitude)
-                }
+                map.cameraPosition.target.toGoogleLatLng()
             )
         }
     }
