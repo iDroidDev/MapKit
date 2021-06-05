@@ -318,7 +318,7 @@ class GoogleMapsImpl(context: Context, mapType: MapType = MapType.MAP_VIEW) : Ba
         map.setOnCameraMoveListener { cameraMoveListener.invoke(getCameraPosition().target) }
     }
 
-    override fun snapshot(snapshotReadyListener: (_bitmap: Bitmap) -> Unit) {
+    override fun snapshot(snapshotReadyListener: (_bitmap: Bitmap?) -> Unit) {
         map.snapshot { bitmap -> snapshotReadyListener(bitmap) }
     }
 
