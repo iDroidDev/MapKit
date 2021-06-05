@@ -13,10 +13,8 @@ import idroid.android.mapskit.utils.CheckServiceAvaiable
 import idroid.android.mapskit.utils.MapType
 import kotlinx.android.synthetic.main.huawei_google_map_view.view.*
 
-class HuaweiGoogleMapView(context: Context, attrs: AttributeSet?) : RelativeLayout(context, attrs),
-    Maps.OnMapReadyListener {
+class HuaweiGoogleMapView(context: Context, attrs: AttributeSet?) : RelativeLayout(context, attrs) {
     private lateinit var myMaps: Maps
-    private lateinit var onMapAsyncListener: Maps.OnMapReadyListener
     private val distributeType = CheckServiceAvaiable.getAvailableService(context)
 
     init {
@@ -39,13 +37,8 @@ class HuaweiGoogleMapView(context: Context, attrs: AttributeSet?) : RelativeLayo
         myMaps.onCreate(bundle)
     }
 
-    fun getMapAsync(onMapAsyncListener: Maps.OnMapReadyListener) {
-        this.onMapAsyncListener = onMapAsyncListener
-        myMaps.getMapAsync(this)
-    }
-
-    override fun onMapReady(map: Maps) {
-        onMapAsyncListener.onMapReady(map)
+    fun getMapAsync(onMapAsyncListener: (map: Maps) -> Unit) {
+        myMaps.getMapAsync(onMapAsyncListener)
     }
 
     fun onEnterAmbient(bundle: Bundle?) {

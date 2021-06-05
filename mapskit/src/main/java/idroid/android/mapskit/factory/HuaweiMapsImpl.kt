@@ -20,7 +20,7 @@ class HuaweiMapsImpl(
     private var mapView: MapView? = null
     private var mapFragment: SupportMapFragment? = null
     private lateinit var map: HuaweiMap
-    private lateinit var onMapReadyListener: Maps.OnMapReadyListener
+    private lateinit var onMapReadyListener: ((map: Maps) -> Unit)
 
     init {
         if (mapType == MapType.MAP_FRAGMENT) {
@@ -31,16 +31,14 @@ class HuaweiMapsImpl(
         }
     }
 
-    override fun getMapView(): View? {
-        return mapView
-    }
+    override fun getMapView(): View? = mapView
 
     override fun onCreate(bundle: Bundle?) {
         mapView?.onCreate(bundle)
         mapFragment?.onCreate(bundle)
     }
 
-    override fun getMapAsync(onMapReadyListener: Maps.OnMapReadyListener) {
+    override fun getMapAsync(onMapReadyListener: ((map: Maps) -> Unit)) {
         this.onMapReadyListener = onMapReadyListener
         if (mapType == MapType.MAP_VIEW) mapView?.getMapAsync(this)
         else if (mapType == MapType.MAP_FRAGMENT) mapFragment?.getMapAsync(this)
@@ -48,7 +46,8 @@ class HuaweiMapsImpl(
 
     override fun onMapReady(huaweiMap: HuaweiMap) {
         map = huaweiMap
-        this.onMapReadyListener.onMapReady(this)
+        if (this::onMapReadyListener.isInitialized)
+            this.onMapReadyListener(this)
     }
 
     override fun addMarker(
@@ -118,7 +117,7 @@ class HuaweiMapsImpl(
         map.moveCamera(
             CameraUpdateFactory.newCameraPosition(
                 CameraPosition(
-                    com.google.android.gms.maps.model.LatLng(latitude, longitude).toHuaweiLatLng(),
+                    LatLng(latitude, longitude),
                     zoomRatio,
                     0f,
                     0f
@@ -218,10 +217,7 @@ class HuaweiMapsImpl(
 
     override fun animateCamera(location: Location, zoomRatio: Float, bearing: Float, tilt: Float) {
         val position = CameraPosition.Builder()
-            .target(
-                com.google.android.gms.maps.model.LatLng(location.latitude, location.longitude)
-                    .toHuaweiLatLng()
-            )
+            .target(LatLng(location.latitude, location.longitude))
             .zoom(zoomRatio)
             .bearing(getCameraPosition().bearing)
             .tilt(getCameraPosition().tilt)
@@ -229,10 +225,10 @@ class HuaweiMapsImpl(
         map.animateCamera(CameraUpdateFactory.newCameraPosition(position))
     }
 
-    override fun setInfoWindowAdapter(infoWindowAdapter: Maps.InfoWindowAdapter) {
+    override fun setInfoWindowAdapter(infoWindowAdapter: (marker: CommonMarker) -> View) {
         map.setInfoWindowAdapter(object : HuaweiMap.InfoWindowAdapter {
             override fun getInfoWindow(marker: Marker): View? {
-                infoWindowAdapter.getInfoWindow(marker.toHesMarker())
+                infoWindowAdapter(marker.toHesMarker())
                 return null
             }
 
@@ -325,10 +321,7 @@ class HuaweiMapsImpl(
     override fun getCameraPosition(): com.google.android.gms.maps.model.CameraPosition {
         val cameraPosition = map.cameraPosition
         return com.google.android.gms.maps.model.CameraPosition(
-            com.google.android.gms.maps.model.LatLng(
-                cameraPosition.target.latitude,
-                cameraPosition.target.longitude
-            ), cameraPosition.zoom, cameraPosition.tilt, cameraPosition.bearing
+            cameraPosition.target.toGoogleLatLng(), cameraPosition.zoom, cameraPosition.tilt, cameraPosition.bearing
         )
     }
 
@@ -336,44 +329,30 @@ class HuaweiMapsImpl(
         return HesProjectionImpl.getProjection(map.projection)!!
     }
 
-    override fun setOnMarkerClickListener(onMapMarkerClickListener: Maps.OnMapMarkerClickListener?) {
-        onMapMarkerClickListener?.let {
-            map.setOnMarkerClickListener { marker -> it.onMarkerClick(marker.toHesMarker()) }
-        }
+    override fun setOnMarkerClickListener(onMapMarkerClickListener: (marker: CommonMarker) -> Boolean) {
+        map.setOnMarkerClickListener { marker -> onMapMarkerClickListener(marker.toHesMarker()) }
     }
 
-    override fun setOnInfoWindowClickListener(onInfoWindowClickListener: Maps.OnMapInfoWindowClickListener) {
+    override fun setOnInfoWindowClickListener(onInfoWindowClickListener: (marker: CommonMarker) -> Unit) {
         map.setOnInfoWindowClickListener { marker ->
-            onInfoWindowClickListener.onInfoWindowClick(
-                marker.toHesMarker()
-            )
+            onInfoWindowClickListener(marker.toHesMarker())
         }
     }
 
-    override fun setOnMapLongClickListener(mapLongClickListener: Maps.MapLongClickListener) {
+    override fun setOnMapLongClickListener(mapLongClickListener: (point: com.google.android.gms.maps.model.LatLng) -> Unit) {
         map.setOnMapLongClickListener { latLng ->
-            mapLongClickListener.onMapLongClick(
-                com.google.android.gms.maps.model.LatLng(
-                    latLng.latitude,
-                    latLng.longitude
-                )
-            )
+            mapLongClickListener(latLng.toGoogleLatLng())
         }
     }
 
-    override fun setOnMapClickListener(mapClickListener: Maps.MapClickListener) {
+    override fun setOnMapClickListener(mapClickListener: (point: com.google.android.gms.maps.model.LatLng) -> Unit) {
         map.setOnMapClickListener { latLng ->
-            mapClickListener.onMapClick(
-                com.google.android.gms.maps.model.LatLng(
-                    latLng.latitude,
-                    latLng.longitude
-                )
-            )
+            mapClickListener(latLng.toGoogleLatLng())
         }
     }
 
-    override fun setOnMapLoadedCallback(mapLoadedListener: Maps.MapLoadedListener) {
-        map.setOnMapLoadedCallback { mapLoadedListener.onMapLoaded() }
+    override fun setOnMapLoadedCallback(mapLoadedListener: () -> Unit) {
+        map.setOnMapLoadedCallback { mapLoadedListener() }
     }
 
     override fun setOnCameraIdleListener(cameraIdleListener: () -> Unit) {
@@ -383,15 +362,13 @@ class HuaweiMapsImpl(
     override fun setOnCameraMoveListener(cameraMoveListener: (position: com.google.android.gms.maps.model.LatLng) -> Unit) {
         map.setOnCameraMoveListener {
             cameraMoveListener.invoke(
-                with(map.cameraPosition.target) {
-                    com.google.android.gms.maps.model.LatLng(latitude, longitude)
-                }
+                map.cameraPosition.target.toGoogleLatLng()
             )
         }
     }
 
-    override fun snapshot(snapshotReadyListener: Maps.SnapshotReadyListener) {
-        map.snapshot { bitmap -> snapshotReadyListener.onSnapshotReady(bitmap) }
+    override fun snapshot(snapshotReadyListener: (_bitmap: Bitmap) -> Unit) {
+        map.snapshot { bitmap -> snapshotReadyListener(bitmap) }
     }
 
     override fun clear() {
