@@ -138,11 +138,22 @@ override fun onStop() {
 
 **Our LocationKit SDK link:** www.github.com/iDroidDev/LocationKit
 
+# Documentation
+
+[![](https://img.shields.io/static/v1?label=dokka&message=mapskit&color=orange&style=for-the-badge&logo=kotlin)](https://arnyminerz.github.io/MapKit/html/)
+
 # Authors
+
 * **Kaan KÜN** - *Mobile Application Developer*
 * **Mahmut YETİŞİR** - *Mobile Application Developer*
 
+## Contributors
+
+* **Arnau Mora** (*~ArnyminerZ*) - [Github](https://github.com/ArnyminerZ)
+
 ## Don't worry
+
 You can always contact us.
+
 * **Kaan KÜN** Email : kaanforum4@gmail.com
 * **Mahmut YETİŞİR** Email : mahmutyetisir03@gmail.com
