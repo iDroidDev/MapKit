@@ -33,7 +33,7 @@ class HuaweiGoogleMapView(context: Context, attrs: AttributeSet?) : RelativeLayo
         rlRootHuaweiGoogleMapView.addView(myMaps.getMapView())
     }
 
-    fun onCreate(bundle: Bundle) {
+    fun onCreate(bundle: Bundle?) {
         myMaps.onCreate(bundle)
     }
 
