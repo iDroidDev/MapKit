@@ -15,7 +15,7 @@ import idroid.android.mapskit.model.*
 interface Maps : UISettings {
     fun getMapView(): View?
     fun onCreate(bundle: Bundle?)
-    fun getMapAsync(onMapReadyListener: OnMapReadyListener)
+    fun getMapAsync(onMapReadyListener: (map: Maps) -> Unit)
 
     fun addMarker(title: String, snippet: String, latitude: Double?, longitude: Double?): CommonMarker
     fun addMarker(icon: Bitmap, latLng: LatLng, title: String): CommonMarker
@@ -37,7 +37,7 @@ interface Maps : UISettings {
     fun animateCamera(latLng: LatLng, zoomRatio: Float, duration: Int)
     fun animateCamera(location: Location, zoomRatio: Float, bearing: Float, tilt: Float)
 
-    fun setInfoWindowAdapter(infoWindowAdapter: InfoWindowAdapter)
+    fun setInfoWindowAdapter(infoWindowAdapter: (marker: CommonMarker) -> View)
 
     fun addCircle(circleOptions: CircleOptions): CommonCircle
     fun addPolyline(options: CommonPolylineOptions): CommonPolyline
@@ -57,54 +57,17 @@ interface Maps : UISettings {
 
     fun getProjection(): CommonProjection
 
-    fun setOnMarkerClickListener(onMapMarkerClickListener: OnMapMarkerClickListener?)
-    fun setOnInfoWindowClickListener(onInfoWindowClickListener: OnMapInfoWindowClickListener)
-    fun setOnMapLongClickListener(mapLongClickListener: MapLongClickListener)
-    fun setOnMapClickListener(mapClickListener: MapClickListener)
-    fun setOnMapLoadedCallback(mapLoadedListener: MapLoadedListener)
+    fun setOnMarkerClickListener(onMapMarkerClickListener: (marker: CommonMarker) -> Boolean)
+    fun setOnInfoWindowClickListener(onInfoWindowClickListener: (marker: CommonMarker) -> Unit)
+    fun setOnMapLongClickListener(mapLongClickListener: (point: LatLng) -> Unit)
+    fun setOnMapClickListener(mapClickListener: (point: LatLng) -> Unit)
+    fun setOnMapLoadedCallback(mapLoadedListener: () -> Unit)
     fun setOnCameraIdleListener(cameraIdleListener: () -> Unit)
     fun setOnCameraMoveListener(cameraMoveListener: (position: LatLng) -> Unit)
 
-    fun snapshot(snapshotReadyListener: SnapshotReadyListener)
-
+    fun snapshot(snapshotReadyListener: (_bitmap: Bitmap) -> Unit)
 
     fun clear()
-
-    interface OnMapInfoWindowClickListener {
-        fun onInfoWindowClick(marker: CommonMarker)
-    }
-
-    interface OnMapMarkerClickListener {
-        fun onMarkerClick(marker: CommonMarker): Boolean
-    }
-
-    interface OnMapReadyListener {
-        fun onMapReady(map: Maps)
-    }
-
-    interface CameraChangeListener {
-        fun onCameraChange(position: CameraPosition)
-    }
-
-    interface MapLoadedListener {
-        fun onMapLoaded()
-    }
-
-    interface MapLongClickListener {
-        fun onMapLongClick(point: LatLng)
-    }
-
-    interface MapClickListener {
-        fun onMapClick(point: LatLng)
-    }
-
-    interface InfoWindowAdapter {
-        fun getInfoWindow(marker: CommonMarker): View
-    }
-
-    interface SnapshotReadyListener {
-        fun onSnapshotReady(_bitmap: Bitmap)
-    }
 
     enum class Type {
         SATALLITE, NORMAL
