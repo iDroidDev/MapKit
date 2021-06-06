@@ -1,5 +1,6 @@
 package idroid.android.mapskit.factory
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.location.Location
@@ -8,10 +9,7 @@ import android.view.View
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import idroid.android.mapskit.model.*
-import idroid.android.mapskit.utils.MapType
-import idroid.android.mapskit.utils.toHesCircle
-import idroid.android.mapskit.utils.toHesMarker
-import idroid.android.mapskit.utils.toHesPolyline
+import idroid.android.mapskit.utils.*
 
 
 class GoogleMapsImpl(context: Context, mapType: MapType = MapType.MAP_VIEW) : BaseMaps(
@@ -22,7 +20,7 @@ class GoogleMapsImpl(context: Context, mapType: MapType = MapType.MAP_VIEW) : Ba
     private var mapView: MapView? = null
     private var mapFragment: SupportMapFragment? = null
     private lateinit var map: GoogleMap
-    private lateinit var onMapReadyListener: Maps.OnMapReadyListener
+    private lateinit var onMapReadyListener: ((map: Maps) -> Unit)
 
     init {
         if (mapType == MapType.MAP_FRAGMENT) {
@@ -33,16 +31,14 @@ class GoogleMapsImpl(context: Context, mapType: MapType = MapType.MAP_VIEW) : Ba
         }
     }
 
-    override fun getMapView(): View? {
-        return mapView
-    }
+    override fun getMapView(): View? = mapView
 
-    override fun onCreate(bundle: Bundle) {
+    override fun onCreate(bundle: Bundle?) {
         mapView?.onCreate(bundle)
         mapFragment?.onCreate(bundle)
     }
 
-    override fun getMapAsync(onMapReadyListener: Maps.OnMapReadyListener) {
+    override fun getMapAsync(onMapReadyListener: (map: Maps) -> Unit) {
         this.onMapReadyListener = onMapReadyListener
         if (mapType == MapType.MAP_VIEW) mapView?.getMapAsync(this)
         else if (mapType == MapType.MAP_FRAGMENT) mapFragment?.getMapAsync(this)
@@ -50,17 +46,18 @@ class GoogleMapsImpl(context: Context, mapType: MapType = MapType.MAP_VIEW) : Ba
 
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
-        this.onMapReadyListener.onMapReady(this)
+        if (this::onMapReadyListener.isInitialized)
+            onMapReadyListener(this)
     }
 
     override fun addMarker(
         title: String,
         snippet: String,
-        latitude: Float?,
-        longitude: Float?
+        latitude: Double?,
+        longitude: Double?
     ): CommonMarker {
-        val nyGoogle = latitude?.toDouble()?.let { lat ->
-            longitude?.toDouble()?.let { long ->
+        val nyGoogle = latitude?.let { lat ->
+            longitude?.let { long ->
                 LatLng(lat, long)
             }
         }
@@ -140,12 +137,20 @@ class GoogleMapsImpl(context: Context, mapType: MapType = MapType.MAP_VIEW) : Ba
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoomRatio))
     }
 
-    override fun animateCamera(latitude: Float, longitude: Float, zoomRatio: Float) {
+    override fun moveCamera(latLngBounds: LatLngBounds, padding: Int) {
+        map.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, padding))
+    }
+
+    override fun moveCamera(zoomRatio: Float) {
+        map.moveCamera(CameraUpdateFactory.zoomTo(zoomRatio))
+    }
+
+    override fun animateCamera(latitude: Double, longitude: Double, zoomRatio: Float) {
         map.animateCamera(
             CameraUpdateFactory.newLatLngZoom(
                 LatLng(
-                    latitude.toDouble(),
-                    longitude.toDouble()
+                    latitude,
+                    longitude
                 ), zoomRatio
             )
         )
@@ -155,10 +160,10 @@ class GoogleMapsImpl(context: Context, mapType: MapType = MapType.MAP_VIEW) : Ba
         map.animateCamera(CameraUpdateFactory.zoomTo(zoomRatio))
     }
 
-    override fun animateCamera(latLng: LatLng, zoom: Float) {
+    override fun animateCamera(latLng: LatLng, zoomRatio: Float) {
         val position = CameraPosition.Builder()
             .target(latLng)
-            .zoom(zoom).build()
+            .zoom(zoomRatio).build()
         map.animateCamera(CameraUpdateFactory.newCameraPosition(position))
     }
 
@@ -166,9 +171,9 @@ class GoogleMapsImpl(context: Context, mapType: MapType = MapType.MAP_VIEW) : Ba
         map.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, padding))
     }
 
-    override fun animateCamera(latLng: LatLng, zoom: Float, duration: Int) {
+    override fun animateCamera(latLng: LatLng, zoomRatio: Float, duration: Int) {
         map.animateCamera(
-            CameraUpdateFactory.newLatLngZoom(latLng, zoom),
+            CameraUpdateFactory.newLatLngZoom(latLng, zoomRatio),
             duration,
             object : GoogleMap.CancelableCallback {
                 override fun onFinish() {}
@@ -176,40 +181,71 @@ class GoogleMapsImpl(context: Context, mapType: MapType = MapType.MAP_VIEW) : Ba
             })
     }
 
-    override fun animateCamera(location: Location, zoom: Float, bearing: Float, tilt: Float) {
+    override fun animateCamera(location: Location, zoomRatio: Float, bearing: Float, tilt: Float) {
         val position = CameraPosition.Builder()
             .target(LatLng(location.latitude, location.longitude))
-            .zoom(zoom)
+            .zoom(zoomRatio)
             .bearing(getCameraPosition().bearing)
             .tilt(getCameraPosition().tilt)
             .build()
         map.animateCamera(CameraUpdateFactory.newCameraPosition(position))
     }
 
-    override fun setInfoWindowAdapter(infoWindowAdapter: Maps.InfoWindowAdapter) {
+    override fun setInfoWindowAdapter(infoWindowAdapter: (marker: CommonMarker) -> View) {
         map.setInfoWindowAdapter(object : GoogleMap.InfoWindowAdapter {
             override fun getInfoWindow(marker: Marker): View? {
-                infoWindowAdapter.getInfoWindow(marker.toHesMarker())
+                infoWindowAdapter(marker.toHesMarker())
                 return null
             }
 
-            override fun getInfoContents(marker: Marker): View? {
-                return null
-            }
+            override fun getInfoContents(marker: Marker): View? = null
         })
     }
 
-    override fun addCircle(circleOptions: CircleOptions): CommonCircle {
-        return map.addCircle(circleOptions).toHesCircle()
-    }
+    override fun addCircle(circleOptions: CircleOptions): CommonCircle =
+        map.addCircle(circleOptions).toHesCircle()
 
     override fun addPolyline(options: CommonPolylineOptions): CommonPolyline {
         val polylineOptions = PolylineOptions()
         polylineOptions.addAll(options.getLatLngs())
         polylineOptions.width(options.getWidth())
         polylineOptions.color(options.getColor())
+
+        options.getStartCap()?.googleCap()?.let {
+            polylineOptions.startCap(it)
+        }
+        options.getEndCap()?.googleCap()?.let {
+            polylineOptions.endCap(it)
+        }
+
+        options.getJointType()?.google()?.let {
+            polylineOptions.jointType(it)
+        }
+
         val polyline: Polyline = map.addPolyline(polylineOptions)
         return polyline.toHesPolyline()
+    }
+
+    override fun addPolygon(options: CommonPolygonOptions): CommonPolygon {
+        val polygonOptions = PolygonOptions()
+        polygonOptions.points.addAll(options.points)
+        if (options.holes != null)
+            polygonOptions.holes.addAll(options.holes)
+
+        polygonOptions.fillColor(options.fillColor)
+        polygonOptions.strokeColor(options.strokeColor)
+
+        polygonOptions.strokeWidth(options.strokeWidth)
+        options.strokeJointType?.let {
+            polygonOptions.strokeJointType(it.hms())
+        }
+
+        polygonOptions.clickable(options.clickable)
+        polygonOptions.geodesic(options.geodesic)
+        polygonOptions.visible(options.visible)
+
+        val polygon = map.addPolygon(polygonOptions)
+        return polygon.toHesPolygon()
     }
 
     override fun addTileOverlay(tileOverlayOptions: Any) {
@@ -232,6 +268,7 @@ class GoogleMapsImpl(context: Context, mapType: MapType = MapType.MAP_VIEW) : Ba
         map.animateCamera(CameraUpdateFactory.zoomIn())
     }
 
+    @SuppressLint("MissingPermission")
     override fun setMyLocationEnabled(myLocationEnabled: Boolean) {
         map.isMyLocationEnabled = myLocationEnabled
     }
@@ -253,40 +290,36 @@ class GoogleMapsImpl(context: Context, mapType: MapType = MapType.MAP_VIEW) : Ba
         return HesProjectionImpl.getProjection(map.projection)!!
     }
 
-    override fun setOnMarkerClickListener(onMapMarkerClickListener: Maps.OnMapMarkerClickListener?) {
-        onMapMarkerClickListener?.let {
-            map.setOnMarkerClickListener { marker -> it.onMarkerClick(marker.toHesMarker()) }
-        }
+    override fun setOnMarkerClickListener(onMapMarkerClickListener: (marker: CommonMarker) -> Boolean) {
+        map.setOnMarkerClickListener { marker -> onMapMarkerClickListener(marker.toHesMarker()) }
     }
 
-    override fun setOnInfoWindowClickListener(onInfoWindowClickListener: Maps.OnMapInfoWindowClickListener) {
-        map.setOnInfoWindowClickListener { marker ->
-            onInfoWindowClickListener.onInfoWindowClick(marker.toHesMarker())
-        }
+    override fun setOnInfoWindowClickListener(onInfoWindowClickListener: (marker: CommonMarker) -> Unit) {
+        map.setOnInfoWindowClickListener { marker -> onInfoWindowClickListener(marker.toHesMarker()) }
     }
 
-    override fun setOnMapLongClickListener(mapLongClickListener: Maps.MapLongClickListener) {
-        map.setOnMapLongClickListener { latLng -> mapLongClickListener.onMapLongClick(latLng) }
+    override fun setOnMapLongClickListener(mapLongClickListener: (point: LatLng) -> Unit) {
+        map.setOnMapLongClickListener { latLng -> mapLongClickListener(latLng) }
     }
 
-    override fun setOnMapClickListener(mapClickListener: Maps.MapClickListener) {
-        map.setOnMapClickListener { latLng -> mapClickListener.onMapClick(latLng) }
+    override fun setOnMapClickListener(mapClickListener: (point: LatLng) -> Unit) {
+        map.setOnMapClickListener { latLng -> mapClickListener(latLng) }
     }
 
-    override fun setOnMapLoadedCallback(mapLoadedListener: Maps.MapLoadedListener) {
-        map.setOnMapLoadedCallback { mapLoadedListener.onMapLoaded() }
+    override fun setOnMapLoadedCallback(mapLoadedListener: () -> Unit) {
+        map.setOnMapLoadedCallback { mapLoadedListener() }
     }
 
     override fun setOnCameraIdleListener(cameraIdleListener: () -> Unit) {
         map.setOnCameraIdleListener { cameraIdleListener.invoke() }
     }
 
-    override fun setOnCameraMoveListener(cameraMoveListener: () -> Unit) {
-        map.setOnCameraMoveListener { cameraMoveListener.invoke() }
+    override fun setOnCameraMoveListener(cameraMoveListener: (position: LatLng) -> Unit) {
+        map.setOnCameraMoveListener { cameraMoveListener.invoke(getCameraPosition().target) }
     }
 
-    override fun snapshot(snapshotReadyListener: Maps.SnapshotReadyListener) {
-        map.snapshot { bitmap -> snapshotReadyListener.onSnapshotReady(bitmap) }
+    override fun snapshot(snapshotReadyListener: (_bitmap: Bitmap?) -> Unit) {
+        map.snapshot { bitmap -> snapshotReadyListener(bitmap) }
     }
 
     override fun clear() {

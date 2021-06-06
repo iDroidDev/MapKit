@@ -13,11 +13,9 @@ import idroid.android.mapskit.utils.CheckServiceAvaiable
 import idroid.android.mapskit.utils.MapType
 
 class HuaweiGoogleSupportMapFragment(context: Context, attrs: AttributeSet?) :
-    RelativeLayout(context, attrs),
-    Maps.OnMapReadyListener {
+    RelativeLayout(context, attrs) {
 
     private lateinit var myMaps: Maps
-    private lateinit var onMapAsyncListener: Maps.OnMapReadyListener
     private val distributeType = CheckServiceAvaiable.getAvailableService(context)
 
     init {
@@ -30,17 +28,12 @@ class HuaweiGoogleSupportMapFragment(context: Context, attrs: AttributeSet?) :
             MapFactory.createAndGetMap(context, distributeType, MapType.MAP_FRAGMENT)
     }
 
-    fun onCreate(bundle: Bundle) {
+    fun onCreate(bundle: Bundle?) {
         myMaps.onCreate(bundle)
     }
 
-    fun getMapAsync(onMapAsyncListener: Maps.OnMapReadyListener) {
-        this.onMapAsyncListener = onMapAsyncListener
-        myMaps.getMapAsync(this)
-    }
-
-    override fun onMapReady(map: Maps) {
-        onMapAsyncListener.onMapReady(map)
+    fun getMapAsync(onMapAsyncListener: (map: Maps) -> Unit) {
+        myMaps.getMapAsync(onMapAsyncListener)
     }
 
     fun onEnterAmbient(bundle: Bundle?) {

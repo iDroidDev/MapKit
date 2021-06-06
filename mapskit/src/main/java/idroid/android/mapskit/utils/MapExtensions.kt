@@ -3,6 +3,7 @@ package idroid.android.mapskit.utils
 import com.google.android.gms.maps.model.*
 import idroid.android.mapskit.model.CommonCircle
 import idroid.android.mapskit.model.CommonMarker
+import idroid.android.mapskit.model.CommonPolygon
 import idroid.android.mapskit.model.CommonPolyline
 
 // Huawei Map Objects
@@ -23,17 +24,22 @@ fun com.huawei.hms.maps.model.Marker.toHesMarker(): CommonMarker = CommonMarker(
 
 
 fun com.huawei.hms.maps.model.Polyline.toHesPolyline(): CommonPolyline? = CommonPolyline(
-        DistributeType.HUAWEI_SERVICES,
-        this,
-        this.width,
-        this.color,
-        this.zIndex,
-        this.points
+    DistributeType.HUAWEI_SERVICES,
+    this,
+    this.width,
+    this.color,
+    this.zIndex,
+    this.points
+)
+
+fun com.huawei.hms.maps.model.Polygon.toHesPolygon(): CommonPolygon = CommonPolygon(
+    DistributeType.HUAWEI_SERVICES,
+    this
 )
 
 fun com.huawei.hms.maps.model.LatLngBounds.toGoogleLatLngBounds(): LatLngBounds = LatLngBounds(
-        LatLng(this.southwest.latitude, this.southwest.longitude),
-        LatLng(this.northeast.latitude, this.northeast.longitude)
+    LatLng(this.southwest.latitude, this.southwest.longitude),
+    LatLng(this.northeast.latitude, this.northeast.longitude)
 )
 
 fun com.huawei.hms.maps.model.Circle.toHesCircle(): CommonCircle =
@@ -57,18 +63,23 @@ fun Marker.toHesMarker(): CommonMarker = CommonMarker(
 )
 
 fun Polyline.toHesPolyline(): CommonPolyline = CommonPolyline(
-        DistributeType.GOOGLE_SERVICES,
-        this,
-        this.points,
-        this.width,
-        this.color,
-        this.zIndex
+    DistributeType.GOOGLE_SERVICES,
+    this,
+    this.points,
+    this.width,
+    this.color,
+    this.zIndex
+)
+
+fun Polygon.toHesPolygon(): CommonPolygon = CommonPolygon(
+    DistributeType.GOOGLE_SERVICES,
+    this
 )
 
 fun LatLngBounds.toHuaweiLatLngBounds(): com.huawei.hms.maps.model.LatLngBounds =
     com.huawei.hms.maps.model.LatLngBounds(
-            LatLng(this.southwest.latitude, this.southwest.longitude).toHuaweiLatLng(),
-            LatLng(this.northeast.latitude, this.northeast.longitude).toHuaweiLatLng()
+        LatLng(this.southwest.latitude, this.southwest.longitude).toHuaweiLatLng(),
+        LatLng(this.northeast.latitude, this.northeast.longitude).toHuaweiLatLng()
     )
 
 fun Circle.toHesCircle(): CommonCircle = CommonCircle(DistributeType.GOOGLE_SERVICES, this)

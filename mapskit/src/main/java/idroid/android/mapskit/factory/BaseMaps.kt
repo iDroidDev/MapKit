@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import idroid.android.mapskit.utils.MapType
 
-
 abstract class BaseMaps(private val context: Context, val mapType: MapType) : Maps,
     UISettings, MapsLifeCycle {
 
@@ -30,5 +29,4 @@ abstract class BaseMaps(private val context: Context, val mapType: MapType) : Ma
             }
         }
     }
-
 }
